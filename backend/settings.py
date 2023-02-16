@@ -25,14 +25,26 @@ SECRET_KEY = 'django-insecure-#3nmxvxa+j2t-p0%-@6(fq3^y($loedjjmj9r8)if-ceal93))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-CORS_ORIGIN_ALLOW_ALL = DEBUG
+CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = ['*']
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8000',
-)
+CORS_ALLOWED_ORIGINS = [
+    "https://ayotech-py.github.io",
+    "http://localhost:8080",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 

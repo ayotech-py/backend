@@ -27,7 +27,7 @@ class Authentication(BaseAuthentication):
 
         if not authorization:
             return None
-        token = headers['Authorization']
+        token = headers['Authorization'][7:]
         decoded_data = Authentication.verify_token(token=token)
 
         if not decoded_data:

@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from .authentication import Authentication
 from rest_framework.permissions import IsAuthenticated
+from django.core import serializers
 import json
 
 
@@ -46,7 +47,8 @@ class LoginView(APIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        data = json.loads(request.body)
+        serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
 
         user = authenticate(
@@ -120,4 +122,6 @@ class GetSecuredData(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        return Response({"data": "This is the secured data"})
+        user_id = request.user.id
+        username = User.objects.get(id=user_id)
+        return Response({"user": username.username})
