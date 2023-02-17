@@ -6,12 +6,12 @@ from django.conf import settings
 import random
 import string
 from rest_framework.views import APIView
-from .serializers import LoginSerializer, RegisterSerializer, RefreshSerializer
+from .serializers import LoginSerializer, RegisterSerializer, RefreshSerializer, OrganizeQuizSerializer
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from .authentication import Authentication
 from rest_framework.permissions import IsAuthenticated
-from django.core import serializers
+from .models import OrganizeQuiz
 import json
 
 
@@ -24,7 +24,7 @@ def get_rand(length):
 def get_access_token(payload):
     return jwt.encode(
         {
-            "exp": datetime.now() + timedelta(minutes=5), **payload},
+            "exp": datetime.now() + timedelta(minutes=60), **payload},
         settings.SECRET_KEY,
         algorithm="HS256"
     )
@@ -65,7 +65,7 @@ class LoginView(APIView):
 
         Jwt.objects.create(user_id=user.id, access=access, refresh=refresh)
 
-        return Response({"access": access, "refresh": refresh})
+        return Response({"access": access, "refresh": refresh, "username": user.username})
 
 
 class RegisterView(APIView):
@@ -123,5 +123,46 @@ class GetSecuredData(APIView):
 
     def get(self, request):
         user_id = request.user.id
+        quiz_details = OrganizeQuiz.objects.filter(organiser_id=user_id).values(
+            'quiz_title', 'subject', 'quiz_id', 'created_at')
         username = User.objects.get(id=user_id)
-        return Response({"user": username.username})
+
+        context = {
+            "user": username.username,
+            "quiz-details": quiz_details
+        }
+        return Response(context)
+
+
+class OrganizeQuizView(APIView):
+    serializer_class = OrganizeQuizSerializer
+
+    def post(self, request):
+        data = json.loads(request.body)
+
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user.id
+        print(user)
+
+        subject = serializer.validated_data['subject']
+        quiz_title = serializer.validated_data['quiz_title']
+        username = serializer.validated_data['user']
+
+        user = User.objects.get(username=username)
+        try:
+            OrganizeQuiz.objects.create(
+                organiser_id_id=user.id, subject=subject, quiz_title=quiz_title)
+        except Exception:
+            return Response({"error": "Quiz title already exist, please use another quiz title"}, status=400)
+
+        queryset = OrganizeQuiz.objects.filter(
+            organiser_id=user.id).values_list('quiz_title', 'subject', 'quiz_id', 'created_at')
+
+        context = {
+            "success": "Quiz created",
+            "quiz_details":  list(queryset)[-1]
+        }
+
+        return Response(context)

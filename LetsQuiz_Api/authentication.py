@@ -28,9 +28,13 @@ class Authentication(BaseAuthentication):
         if not authorization:
             return None
         token = headers['Authorization'][7:]
+        username = headers['user']
         decoded_data = Authentication.verify_token(token=token)
 
         if not decoded_data:
+            return None
+        check_user = User.objects.get(username=username)
+        if check_user.id != decoded_data['user_id']:
             return None
         return decoded_data
 
