@@ -33,6 +33,9 @@ class JoinQuiz(models.Model):
     quiz_id = models.IntegerField()
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class Jwt(models.Model):
     user = models.OneToOneField(

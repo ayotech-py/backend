@@ -20,3 +20,8 @@ class OrganizeQuizSerializer(serializers.Serializer):
     user = serializers.CharField()
     subject = serializers.CharField()
     quiz_title = serializers.CharField()
+
+
+class JoinQuizSerializer(serializers.Serializer):
+    quiz_id = serializers.IntegerField()
+    name = serializers.CharField()

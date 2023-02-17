@@ -6,12 +6,12 @@ from django.conf import settings
 import random
 import string
 from rest_framework.views import APIView
-from .serializers import LoginSerializer, RegisterSerializer, RefreshSerializer, OrganizeQuizSerializer
+from .serializers import LoginSerializer, RegisterSerializer, RefreshSerializer, OrganizeQuizSerializer, JoinQuizSerializer
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from .authentication import Authentication
 from rest_framework.permissions import IsAuthenticated
-from .models import OrganizeQuiz
+from .models import OrganizeQuiz, JoinQuiz
 import json
 
 
@@ -166,3 +166,15 @@ class OrganizeQuizView(APIView):
         }
 
         return Response(context)
+
+
+class JoinQuizView(APIView):
+    serializer_class = JoinQuizSerializer
+
+    def post(self, request):
+        data = json.loads(request.body)
+        serializer = self.serializer_class(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        JoinQuiz.objects.create(**serializer.validated_data)
+        return Response({"success": "Joined room successfully"})
