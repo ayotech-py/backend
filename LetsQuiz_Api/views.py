@@ -24,7 +24,7 @@ def get_rand(length):
 def get_access_token(payload):
     return jwt.encode(
         {
-            "exp": datetime.now() + timedelta(minutes=60), **payload},
+            "exp": datetime.now() + timedelta(minutes=30), **payload},
         settings.SECRET_KEY,
         algorithm="HS256"
     )
@@ -144,7 +144,6 @@ class OrganizeQuizView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = request.user.id
-        print(user)
 
         subject = serializer.validated_data['subject']
         quiz_title = serializer.validated_data['quiz_title']
@@ -176,5 +175,54 @@ class JoinQuizView(APIView):
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
 
-        JoinQuiz.objects.create(**serializer.validated_data)
-        return Response({"success": "Joined room successfully"})
+        name = data['name']
+
+        try:
+            queryset = JoinQuiz.objects.get(name=name)
+            return Response({"success": "Joined room successfully"})
+        except Exception:
+            JoinQuiz.objects.create(**serializer.validated_data)
+            return Response({"success": "Joined room successfully"})
+
+
+class QuizStatus(APIView):
+    authentication_classes = [Authentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user_id = request.user.id
+        status = OrganizeQuiz.objects.filter(organiser_id_id=user_id).values_list(
+            'quiz_title', 'subject', 'quiz_id', 'created_at')
+        context = {
+            "data": list(status)[-1]
+        }
+        quiz_id = context['data'][2]
+        data = json.loads(request.body)
+        quiz_status = data['status']
+        query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
+        query.status = quiz_status
+
+        query.save(update_fields=['status'])
+
+        return Response({"status": "Quiz Started"})
+
+
+class JoinedUserView(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        quiz_id = int(data['quiz_id'])
+
+        query = JoinQuiz.objects.filter(
+            quiz_id=quiz_id).values_list('quiz_id', 'name')
+
+        status = OrganizeQuiz.objects.get(quiz_id=quiz_id).status
+
+        return Response({'data': list(query), "status": status})
+
+
+class QuizQuestionView(APIView):
+    def get(self, request):
+        quiz_id = request.GET.get('quiz_id')
+        query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
+        data = query.questions
+        return Response({"data": eval(data)})

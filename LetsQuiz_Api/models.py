@@ -8,7 +8,7 @@ class OrganizeQuiz(models.Model):
     organiser_id = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     subject = models.CharField(max_length=255)
-    quiz_id = models.IntegerField()
+    quiz_id = models.IntegerField(unique=True)
     past = models.BooleanField(default=False)
     status = models.BooleanField(default=False)
     questions = models.TextField()
@@ -24,7 +24,7 @@ class OrganizeQuiz(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.quiz_title
+        return f"{self.quiz_title} - {self.organiser_id.username}"
 
 # Model for access token and refresh token
 
@@ -32,9 +32,10 @@ class OrganizeQuiz(models.Model):
 class JoinQuiz(models.Model):
     quiz_id = models.IntegerField()
     name = models.CharField(max_length=255)
+    score = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.quiz_id}"
 
 
 class Jwt(models.Model):

@@ -37,7 +37,9 @@ CORS_ALLOW_HEADERS = [
     'user-agent',
     'x-csrftoken',
     'x-requested-with',
-    'user'
+    'user',
+    'quiz_id',
+    'Access-Control-Allow-Origin'
 ]
 
 CORS_ALLOWED_ORIGINS = [
