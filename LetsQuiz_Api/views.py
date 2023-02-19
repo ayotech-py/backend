@@ -226,3 +226,20 @@ class QuizQuestionView(APIView):
         query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
         data = query.questions
         return Response({"data": eval(data)})
+
+
+class QuizScoreView(APIView):
+    def post(self, request):
+        data = json.loads(request.body)
+        query = JoinQuiz.objects.filter(quiz_id=data['quiz_id'])
+        query = query.get(name=data['name'])
+        previous_score = query.score
+        query.score = data['score'] + previous_score
+        query.save()
+        return Response({"data": f"your score {query.score}"})
+
+    def get(self, request):
+        quiz_id = request.GET.get('quiz_id')
+        query = JoinQuiz.objects.filter(
+            quiz_id=quiz_id).values_list('name', 'score')
+        return Response({"data": list(query.order_by('-score'))})
