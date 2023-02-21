@@ -176,9 +176,10 @@ class JoinQuizView(APIView):
         serializer.is_valid(raise_exception=True)
 
         name = data['name']
+        quiz_id = data['quiz_id']
 
         try:
-            queryset = JoinQuiz.objects.get(name=name)
+            queryset = JoinQuiz.objects.filter(quiz_id=quiz_id).get(name=name)
             return Response({"success": "Joined room successfully"})
         except Exception:
             JoinQuiz.objects.create(**serializer.validated_data)
@@ -212,12 +213,14 @@ class JoinedUserView(APIView):
         data = json.loads(request.body)
         quiz_id = int(data['quiz_id'])
 
+        quiz_name = OrganizeQuiz.objects.get(quiz_id=quiz_id)
+
         query = JoinQuiz.objects.filter(
             quiz_id=quiz_id).values_list('quiz_id', 'name')
 
         status = OrganizeQuiz.objects.get(quiz_id=quiz_id).status
 
-        return Response({'data': list(query), "status": status})
+        return Response({'data': list(query), "status": status, "quiz_name": quiz_name.quiz_title})
 
 
 class QuizQuestionView(APIView):
