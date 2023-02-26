@@ -112,7 +112,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'LetsQuiz',
         'HOST': 'localhost',
-        'USER':  'root',
+        'USER':  'ayotech',
         'PASSWORD': 'mysqlpassword',
     }
 }
