@@ -202,6 +202,7 @@ class QuizStatus(APIView):
         quiz_status = data['status']
         query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
         query.status = quiz_status
+        query.past = True
 
         query.save(update_fields=['status'])
 
@@ -211,19 +212,6 @@ class QuizStatus(APIView):
 class JoinedUserView(APIView):
     def get(self, request):
         quiz_id = request.GET.get('quiz_id')
-
-        quiz_name = OrganizeQuiz.objects.get(quiz_id=quiz_id)
-
-        query = JoinQuiz.objects.filter(
-            quiz_id=quiz_id).values_list('quiz_id', 'name')
-
-        status = OrganizeQuiz.objects.get(quiz_id=quiz_id).status
-
-        return Response({'data': list(query), "status": status, "quiz_name": quiz_name.quiz_title})
-
-    def post(self, request):
-        data = json.loads(request.body)
-        quiz_id = int(data['quiz_id'])
 
         quiz_name = OrganizeQuiz.objects.get(quiz_id=quiz_id)
 
