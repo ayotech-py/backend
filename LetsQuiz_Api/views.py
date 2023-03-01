@@ -202,6 +202,7 @@ class QuizStatus(APIView):
         quiz_status = data['status']
         query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
         query.status = quiz_status
+        query.past = quiz_status
         query.past = True
 
         query.save(update_fields=['status'])
