@@ -124,7 +124,7 @@ class GetSecuredData(APIView):
     def get(self, request):
         user_id = request.user.id
         quiz_details = OrganizeQuiz.objects.filter(organiser_id=user_id).values(
-            'quiz_title', 'subject', 'quiz_id', 'created_at', 'past')
+            'quiz_title', 'subject', 'quiz_id', 'created_at', 'status')
         username = User.objects.get(id=user_id)
 
         context = {
