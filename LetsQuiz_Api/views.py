@@ -193,7 +193,7 @@ class QuizStatus(APIView):
     def post(self, request):
         user_id = request.user.id
         status = OrganizeQuiz.objects.filter(organiser_id_id=user_id).values_list(
-            'quiz_title', 'subject', 'quiz_id', 'created_at')
+            'quiz_title', 'subject', 'quiz_id', 'created_at', 'status')
         context = {
             "data": list(status)[-1]
         }
