@@ -178,6 +178,9 @@ class JoinQuizView(APIView):
         name = data['name']
         quiz_id = data['quiz_id']
 
+        if OrganizeQuiz.objects.get(quiz_id=quiz_id) != True:
+            return Response({"error": "Invalid quiz ID, please provide correct Quiz ID"})
+
         try:
             queryset = JoinQuiz.objects.filter(quiz_id=quiz_id).get(name=name)
             return Response({"success": "Joined room successfully"})
