@@ -179,7 +179,7 @@ class JoinQuizView(APIView):
         quiz_id = data['quiz_id']
 
         if not OrganizeQuiz.objects.filter(quiz_id=quiz_id).exists():
-            return Response({"error": "Invalid quiz ID, please provide correct Quiz ID"})
+            return Response({"error": "Invalid quiz ID, please provide correct Quiz ID"}, status=500)
 
         try:
             queryset = JoinQuiz.objects.filter(quiz_id=quiz_id).get(name=name)
