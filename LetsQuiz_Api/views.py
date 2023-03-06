@@ -202,7 +202,7 @@ class QuizStatus(APIView):
         }
         data = json.loads(request.body)
 
-        if data.get("status") != None:
+        if data['status']:
             quiz_id = context['data'][2]
             quiz_status = data['status']
             query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
