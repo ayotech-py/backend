@@ -18,9 +18,10 @@ class OrganizeQuiz(models.Model):
 
     def save(self, *args, **kwargs):
         self.quiz_id = random.randrange(100000, 899999)
-        # url = f"https://the-trivia-api.com/api/questions?categories={self.subject}&limit=20"
-        # response = requests.get(url=url)
-        # self.questions = response.json()
+        if self.subject:
+            url = f"https://the-trivia-api.com/api/questions?categories={self.subject}&limit=20"
+            response = requests.get(url=url)
+            self.questions = response.json()
         super().save(*args, **kwargs)
 
     def __str__(self):
