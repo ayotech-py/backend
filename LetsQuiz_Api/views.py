@@ -212,11 +212,12 @@ class QuizStatus(APIView):
             return Response({"status": "Quiz Started"})
 
         elif data['past']:
-            queryset = OrganizeQuiz.objects.filter(organiser_id_id=user_id)
-            for quiz in queryset:
-                quiz.past = True
-                quiz.save()
-            return Response({"status": "Quiz Started"})
+            quiz_id = context['data'][2]
+            quiz_past = data['past']
+            query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
+            query.past = quiz_past
+            query.save(update_fields=['past'])
+            return Response({"status": "Successfullly passsed"})
 
 
 class JoinedUserView(APIView):
