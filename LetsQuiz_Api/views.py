@@ -205,7 +205,7 @@ class QuizStatus(APIView):
         if data["status"]:
             quiz_id = context['data'][2]
             quiz_status = data['status']
-            query.status = quiz_status
+            query.status = True
             query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
             query.save(update_fields=['status'])
 
