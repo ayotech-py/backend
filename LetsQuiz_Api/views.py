@@ -212,7 +212,7 @@ class QuizStatus(APIView):
             return Response({"status": "Quiz Started"})
 
         elif "past" in data:
-            for quiz in status:
+            for quiz in list(status):
                 quiz.past = data['past']
                 quiz.save(update_fields=['past'])
             return Response({"status": "Quiz Started"})
