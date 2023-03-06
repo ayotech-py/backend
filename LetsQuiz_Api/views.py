@@ -229,8 +229,9 @@ class JoinedUserView(APIView):
             quiz_id=quiz_id).values_list('quiz_id', 'name')
 
         status = OrganizeQuiz.objects.get(quiz_id=quiz_id).status
+        past = OrganizeQuiz.objects.get(quiz_id=quiz_id).past
 
-        return Response({'data': list(query), "status": status, "quiz_name": quiz_name.quiz_title})
+        return Response({'data': list(query), "status": status, "quiz_name": quiz_name.quiz_title, "past": past})
 
 
 class QuizQuestionView(APIView):
