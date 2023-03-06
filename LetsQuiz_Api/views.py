@@ -201,21 +201,23 @@ class QuizStatus(APIView):
             "data": list(status)[-1]
         }
         data = json.loads(request.body)
-        print(data)
-        if data["status"]:
-            quiz_id = context['data'][2]
-            quiz_status = data['status']
-            query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
-            query.status = quiz_status
-            query.save(update_fields=['status'])
 
-            return Response({"status": "Quiz Started"})
+        try:
+            if data["status"]:
+                quiz_id = context['data'][2]
+                quiz_status = data['status']
+                query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
+                query.status = quiz_status
+                query.save(update_fields=['status'])
 
-        elif data["past"]:
-            for quiz in status:
-                quiz.past = data['past']
-                quiz.save(update_fields=['past'])
-            return Response({"status": "Quiz Started"})
+                return Response({"status": "Quiz Started"})
+
+        except Exception:
+            if data["past"]:
+                for quiz in status:
+                    quiz.past = data['past']
+                    quiz.save(update_fields=['past'])
+                return Response({"status": "Quiz Started"})
 
 
 class JoinedUserView(APIView):
