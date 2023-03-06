@@ -196,19 +196,25 @@ class QuizStatus(APIView):
     def post(self, request):
         user_id = request.user.id
         status = OrganizeQuiz.objects.filter(organiser_id_id=user_id).values_list(
-            'quiz_title', 'subject', 'quiz_id', 'created_at', 'status')
+            'quiz_title', 'subject', 'quiz_id', 'created_at', 'status', 'past')
         context = {
             "data": list(status)[-1]
         }
-        quiz_id = context['data'][2]
         data = json.loads(request.body)
-        quiz_status = data['status']
-        query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
-        query.status = quiz_status
+        if data["status"]:
+            quiz_id = context['data'][2]
+            quiz_status = data['status']
+            query.status = quiz_status
+            query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
+            query.save(update_fields=['status'])
 
-        query.save(update_fields=['status'])
+            return Response({"status": "Quiz Started"})
 
-        return Response({"status": "Quiz Started"})
+        elif data["past"]:
+            for quiz in status:
+                quiz.past = data['past']
+                quiz.save(update_fields=['past'])
+            return Response({"status": "Quiz Started"})
 
 
 class JoinedUserView(APIView):
