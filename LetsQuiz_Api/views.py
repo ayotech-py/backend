@@ -212,10 +212,10 @@ class QuizStatus(APIView):
             return Response({"status": "Quiz Started"})
 
         elif "past" in data:
-            queryset = list(status)
-            for i in range(len(queryset)):
-                queryset[i].past = data['past']
-                queryset[i].save(update_fields=['past'])
+            queryset = OrganizeQuiz.objects.filter(organiser_id_id=user_id)
+            for quiz in queryset:
+                quiz.past = data['past']
+                quiz.save(update_fields=['past'])
             return Response({"status": "Quiz Started"})
 
 
