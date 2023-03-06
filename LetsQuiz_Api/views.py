@@ -202,7 +202,7 @@ class QuizStatus(APIView):
         }
         data = json.loads(request.body)
 
-        if data["status"]:
+        if "status" in data:
             quiz_id = context['data'][2]
             quiz_status = data['status']
             query = OrganizeQuiz.objects.get(quiz_id=quiz_id)
@@ -211,7 +211,7 @@ class QuizStatus(APIView):
 
             return Response({"status": "Quiz Started"})
 
-        elif data["past"]:
+        elif "past" in data:
             for quiz in status:
                 quiz.past = data['past']
                 quiz.save(update_fields=['past'])
