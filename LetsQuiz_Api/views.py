@@ -201,6 +201,7 @@ class QuizStatus(APIView):
             "data": list(status)[-1]
         }
         data = json.loads(request.body)
+        print(data)
         if data["status"]:
             quiz_id = context['data'][2]
             quiz_status = data['status']
