@@ -216,7 +216,7 @@ class QuizStatus(APIView):
             for quiz in queryset:
                 quiz.past = True
                 quiz.save(update_fields=['past'])
-            #SSSSreturn Response({"status": "Quiz Started"})
+            return Response({"status": "Quiz Started"})
 
 
 class JoinedUserView(APIView):
