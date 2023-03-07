@@ -181,6 +181,8 @@ class JoinQuizView(APIView):
         if not OrganizeQuiz.objects.filter(quiz_id=quiz_id).exists():
             return Response({"error": "Invalid quiz ID, please provide correct Quiz ID"}, status=500)
 
+        if OrganizeQuiz.objects.get(quiz_id=quiz_id).past:
+            return Response({"error": "This quiz already elapsed"}, status=500)
         try:
             queryset = JoinQuiz.objects.filter(quiz_id=quiz_id).get(name=name)
             return Response({"success": "Joined room successfully"})
