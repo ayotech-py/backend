@@ -11,8 +11,8 @@ LetsQuiz is a platform whereby a teacher can create a virtual classroom to organ
 The platform will consist of quizzes on various subjects. The teacher can choose a subject where he/she wants the quiz questions to come from.
 <br>
 Here are few screenshots of the webapp API built with Django Restframework
-![Alt image 1](./images/image_01.png)
-![Alt Image 02](./images/image_02.png)
+![Alt image 1](./static/images/image_01.png)
+![Alt Image 02](./static/images/image_02.png)
 <br>
 Here is the link to view the Webapp live - https://quiz.ayotech-py.tech
 
